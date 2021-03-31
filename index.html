@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=McLaren&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+        <h1>Your Friendly Neighborhood Curbside Resturant</h1>
+<div id="stuff">
+    
+
+    <div id="app">
+    
+        <div v-for = "stock in stocks" id="food">
+            <h1>{{stock.name}}</h1>
+            <p id="des">{{stock.description}}</p>
+            <img v-bind:src = "stock.imgSrc">
+            <p><b>Inventory:</b> {{stock.inv}}</p>
+            <p><b>Price:</b> ${{stock.price}}</p>
+            <button v-show= "stock.inv > 0" @click="orderThis(stock)">Order {{stock.name}}</button>
+            <br>
+            <button v-show="stock.ordered > 0" @click="removeOne(stock)">Remove one {{stock.name}}</button>
+            <br>
+            <button v-show="stock.ordered > 0" @click="removeAll(stock)">Remove all {{stock.name}}</button>
+        </div>
+        
+        <div id="rec">
+        
+        <p v-show = "cartItem > 0"><b>Cart Items:</b> {{cartItem}}</p>
+        <p><b>Items Selected:</b> {{itemsSelected}}</p>
+        <p><b>Sub-Total:</b> ${{subTotal}}</p>
+        <p><b>Total Price:</b> ${{totalPrice}}</p><button @click="calculateTot()">Calculate Total Price</button>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+    <script>
+    var app = new Vue(
+        {
+            el:"#app",
+            data:{
+                itemsSelected: "Empty",
+                subTotal: 0.00,
+                totalPrice: 0.00,
+                tax: 0.03,
+                stocks:[
+                    {name: "CheeseBurger", description: "A juicy all American burger", inv: 5, ordered: 0, price: 6.99, imgSrc: "cheeseburger.jpg"}, 
+                    {name: "Curly Fries", description: "Like Arby's fries but sooo much better", inv: 8, ordered: 0, price: 2.99, imgSrc: "curlyfries.jpg"},
+                    {name: "Mtn. Dew", description: "The only drink you need.....ever", ordered: 0, inv: 10, price: 1.99, imgSrc: "mtndew.jpg"}
+                    ],
+                    cartItem: 0,
+                    
+            },
+            methods:{
+                orderThis(anObj)
+                {
+                    
+                    anObj.ordered++;
+                    anObj.inv--
+                    this.cartItem++;
+                    this.itemsSelected = anObj.ordered + " " + anObj.name;
+                    this.subTotal += anObj.price
+                    
+                    
+                },
+                removeOne(anObj)
+                {
+                    this.subTotal -= anObj.price.toFixed(2);
+                    anObj.ordered--;
+                    anObj.inv++
+                    this.cartItem--;
+                    this.itemsSelected = "Remove one " + anObj.name;
+                },
+                removeAll(anObj)
+                {
+                    
+                    var maxInv = anObj.ordered + anObj.inv;
+                    this.subTotal -= anObj.price * anObj.ordered 
+                    anObj.ordered = 0;
+                    anObj.inv = maxInv
+                    this.itemsSelected = "Empty";
+                    this.cartItem = 0;
+
+                    
+                },
+                calculateTot(){
+                   var totTax = this.subTotal * this.tax
+                   Tot = totTax + this.subTotal
+                   this.totalPrice = Tot.toFixed(2)
+                   
+
+                }
+            }
+        }
+    )
+    </script>
+
+</body>
+</html>
